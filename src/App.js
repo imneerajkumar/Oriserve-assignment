@@ -1,23 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import SearchBar from "./components/searchBar";
+import DisplayBox from "./components/displayBox";
+import "./App.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Loader from "./components/loader";
+import Error from "./components/error";
 
 function App() {
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const callImageAPI = async (searchType, searchInput) => {
+    const api_key = "5708d234ee6163585c37fa3b4914ba29";
+    const baseUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.${searchType}&api_key=${api_key}&safe_search=3&format=json&nojsoncallback=1`;
+    const url =
+      searchType === "search" ? baseUrl + `&text=${searchInput}` : baseUrl;
+    try {
+      const { data } = await axios.get(url);
+      if (data?.photos?.photo?.length > 0) {
+        setImages(data?.photos?.photo);
+      } else {
+        setError("No Data found");
+      }
+      setLoading(false);
+    } catch (err) {
+      setError(err?.message);
+      setLoading(false);
+    }
+  };
+
+  const searchImages = async (searchInput) => {
+    callImageAPI("search", searchInput);
+    const prevSearches = await localStorage?.getItem("searches");
+    localStorage?.setItem("searches", prevSearches + "," + searchInput);
+  };
+
+  useEffect(() => {
+    callImageAPI("getRecent", "");
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <SearchBar searchImages={searchImages} />
+      {loading && <Loader />}
+      {!loading && error ? (
+        <Error error={error} />
+      ) : (
+        <DisplayBox images={images} />
+      )}
     </div>
   );
 }
