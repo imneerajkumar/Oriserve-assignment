@@ -31,9 +31,11 @@ function App() {
   };
 
   const searchImages = async (searchInput) => {
-    callImageAPI("search", searchInput);
+    setImages([]);
+    setLoading(true);
     const prevSearches = await localStorage?.getItem("searches");
-    localStorage?.setItem("searches", prevSearches + "," + searchInput);
+    localStorage?.setItem("searches", (prevSearches || "") + "," + searchInput);
+    callImageAPI("search", searchInput);
   };
 
   useEffect(() => {

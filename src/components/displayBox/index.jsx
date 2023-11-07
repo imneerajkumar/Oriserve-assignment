@@ -24,17 +24,21 @@ export default function Display({ images }) {
           />
         </div>
       ))}
-      <Modal show={show} onHide={() => setShow(!show)}>
-        <Modal.Header closeButton>
-          <Modal.Title>{data?.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <img
-            src={`https://farm${data?.farm}.staticflickr.com/${data?.server}/${data?.id}_${data?.secret}.jpg`}
-            alt=""
-          />
-        </Modal.Body>
-      </Modal>
+      <div className="container">
+        <Modal show={show} onHide={() => setShow(!show)}>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              <h4>{data?.title}</h4>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <img
+              src={`https://farm${data?.farm}.staticflickr.com/${data?.server}/${data?.id}_${data?.secret}.jpg`}
+              alt=""
+            />
+          </Modal.Body>
+        </Modal>
+      </div>
     </div>
   );
 }

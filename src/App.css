@@ -18,6 +18,43 @@
 }
 .searchInput {
   width: 80%;
+  position: relative;
+}
+.suggestions {
+  z-index: -2;
+  position: absolute;
+  top: 3rem;
+  width: 100%;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 0.5rem !important;
+  max-height: 12rem;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.suggestions::-webkit-scrollbar {
+  display: none;
+}
+.suggestions > p {
+  margin: 0;
+  padding: 0.5rem;
+  border-bottom: 1px solid black;
+  color: black;
+  cursor: pointer;
+}
+.clearBtn {
+  width: 100%;
+  background-color: #eee;
+  text-align: right;
+  padding: 0.5rem 1rem;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+}
+.clearBtn > .btn {
+  width: 6rem;
+  padding: 0.5rem;
 }
 .displayBox {
   width: 100%;
@@ -37,8 +74,18 @@
   opacity: 0.8;
 }
 .modal-dialog {
-  max-width: 100%;
-  width: fit-content;
+  top: 5%;
+}
+.modal-title {
+  width: 90%;
+  overflow: hidden;
+}
+.modal-title > h4 {
+  width: 100%;
+  text-overflow: ellipsis;
+}
+.modal-body > img {
+  width: 100%;
 }
 .loader {
   display: flex;
@@ -57,6 +104,9 @@
   align-items: center;
   width: 100%;
   height: 60vh;
+}
+.error > img {
+  width: 20%;
 }
 @media (min-width: 992px) {
   .searchInput {
