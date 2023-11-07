@@ -4,6 +4,7 @@ import { InputGroup, Form, Button } from "react-bootstrap";
 export default function SearchBar(props) {
   const [searchInput, setSearchInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [show, setShow] = useState(false);
 
   const handleFocus = () => {
     if (localStorage?.getItem("searches")) {
@@ -12,15 +13,11 @@ export default function SearchBar(props) {
       ];
       setSuggestions(() => searches.filter((item) => item.length > 1));
     }
+    setShow(true);
   };
 
   const handleClear = () => {
-    setSuggestions([]);
     localStorage?.removeItem("searches");
-  };
-
-  const handleSubmit = () => {
-    props.searchImages(searchInput);
     setSuggestions([]);
   };
 
@@ -33,13 +30,17 @@ export default function SearchBar(props) {
             onChange={(e) => setSearchInput(e.target.value)}
             value={searchInput}
             placeholder="Search..."
+            onBlur={() => setTimeout(() => setShow(false), 2000)}
             onFocus={handleFocus}
           />
-          <Button variant="primary" onClick={handleSubmit}>
+          <Button
+            variant="primary"
+            onClick={() => props.searchImages(searchInput)}
+          >
             Search
           </Button>
         </>
-        {suggestions?.length > 0 && (
+        {suggestions?.length > 0 && show && (
           <div className="suggestions">
             {suggestions?.map((item, index) => (
               <p key={`${item + index}`} onClick={() => setSearchInput(item)}>
@@ -47,7 +48,7 @@ export default function SearchBar(props) {
               </p>
             ))}
             <div className="clearBtn">
-              <Button variant="warning" onClick={handleClear}>
+              <Button variant="danger" onClick={handleClear}>
                 Clear
               </Button>
             </div>

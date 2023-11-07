@@ -12,8 +12,8 @@ function App() {
   const [error, setError] = useState("");
 
   const callImageAPI = async (searchType, searchInput) => {
-    const api_key = "5708d234ee6163585c37fa3b4914ba29";
-    const baseUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.${searchType}&api_key=${api_key}&safe_search=3&format=json&nojsoncallback=1`;
+    const api_key = process.env.REACT_APP_API_KEY;
+    const baseUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.${searchType}&api_key=${api_key}&safe_search=1&format=json&nojsoncallback=1`;
     const url =
       searchType === "search" ? baseUrl + `&text=${searchInput}` : baseUrl;
     try {
