@@ -3,10 +3,10 @@ import { Modal } from "react-bootstrap";
 
 export default function Display({ images }) {
   const [show, setShow] = useState(false);
-  const [data, setData] = useState({});
+  const [modalImage, setModalImage] = useState({});
 
   const handleShow = (image) => {
-    setData(image);
+    setModalImage(image);
     setShow(true);
   };
 
@@ -24,21 +24,19 @@ export default function Display({ images }) {
           />
         </div>
       ))}
-      <div className="container">
-        <Modal show={show} onHide={() => setShow(!show)}>
-          <Modal.Header closeButton>
-            <Modal.Title>
-              <h4>{data?.title}</h4>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <img
-              src={`https://farm${data?.farm}.staticflickr.com/${data?.server}/${data?.id}_${data?.secret}.jpg`}
-              alt=""
-            />
-          </Modal.Body>
-        </Modal>
-      </div>
+      <Modal show={show} onHide={() => setShow(!show)}>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <h4>{modalImage?.title}</h4>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img
+            src={`https://farm${modalImage?.farm}.staticflickr.com/${modalImage?.server}/${modalImage?.id}_${modalImage?.secret}.jpg`}
+            alt=""
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
