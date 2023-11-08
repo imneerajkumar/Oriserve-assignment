@@ -15,7 +15,7 @@ function App() {
   const [hasMore, setHasMore] = useState(true);
 
   const callImageAPI = async (searchInput) => {
-    setRes([]);
+    setImages([]);
     setLoading(true);
     const searchType = searchInput ? "search" : "getRecent";
     const api_key = process.env.REACT_APP_API_KEY;
@@ -52,9 +52,9 @@ function App() {
     setTimeout(() => {
       setImages((images) => [
         ...images,
-        ...res?.slice(images?.length, images?.length + 20),
+        ...res?.slice(images?.length, images?.length + 10),
       ]);
-    }, 1000);
+    }, 1500);
   };
 
   useEffect(() => {
