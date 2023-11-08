@@ -1,4 +1,5 @@
 import SearchBar from "./components/searchBar";
+import InfiniteScroll from "react-infinite-scroll-component";
 import DisplayBox from "./components/displayBox";
 import "./App.css";
 import { useEffect, useState } from "react";
@@ -7,11 +8,16 @@ import Loader from "./components/loader";
 import Error from "./components/error";
 
 function App() {
+  const [res, setRes] = useState([]);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [hasMore, setHasMore] = useState(true);
 
-  const callImageAPI = async (searchType, searchInput) => {
+  const callImageAPI = async (searchInput) => {
+    setRes([]);
+    setLoading(true);
+    const searchType = searchInput ? "search" : "getRecent";
     const api_key = process.env.REACT_APP_API_KEY;
     const baseUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.${searchType}&api_key=${api_key}&safe_search=1&format=json&nojsoncallback=1`;
     const url =
@@ -19,7 +25,8 @@ function App() {
     try {
       const { data } = await axios.get(url);
       if (data?.photos?.photo?.length > 0) {
-        setImages(data?.photos?.photo);
+        setRes(data?.photos?.photo);
+        setImages(data?.photos?.photo?.slice(0, 10));
       } else {
         setError("No Data found");
       }
@@ -31,15 +38,27 @@ function App() {
   };
 
   const searchImages = async (searchInput) => {
-    setImages([]);
-    setLoading(true);
     const prevSearches = await localStorage?.getItem("searches");
     localStorage?.setItem("searches", (prevSearches || "") + "," + searchInput);
-    callImageAPI("search", searchInput);
+    callImageAPI(searchInput);
+  };
+
+  const handleNext = () => {
+    if (images?.length > 98) {
+      setHasMore(false);
+      return;
+    }
+
+    setTimeout(() => {
+      setImages((images) => [
+        ...images,
+        ...res?.slice(images?.length, images?.length + 20),
+      ]);
+    }, 1000);
   };
 
   useEffect(() => {
-    callImageAPI("getRecent", "");
+    callImageAPI("");
   }, []);
 
   return (
@@ -49,7 +68,14 @@ function App() {
       {!loading && error ? (
         <Error error={error} />
       ) : (
-        <DisplayBox images={images} />
+        <InfiniteScroll
+          dataLength={images.length}
+          next={handleNext}
+          hasMore={hasMore}
+          loader={<Loader />}
+        >
+          <DisplayBox images={images} />
+        </InfiniteScroll>
       )}
     </div>
   );
